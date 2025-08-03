@@ -1,0 +1,101 @@
+{
+	"info": {
+		"_postman_id": "ac3c1ee3-dc46-4109-a4cb-07d61b4bc19e",
+		"name": "Categories API Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44045492",
+		"_collection_link": "https://demo-team-9120.postman.co/workspace/API-Testing~8eead984-ed2d-412f-a35c-9bb70fb3cd13/collection/44045492-ac3c1ee3-dc46-4109-a4cb-07d61b4bc19e?action=share&source=collection_link&creator=44045492"
+	},
+	"item": [
+		{
+			"name": "Store new category",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const method = pm.iterationData.get('req_method') || 'POST';\r",
+							"const path   = pm.iterationData.get('req_path')   || '/categories';\r",
+							"\r",
+							"pm.request.method = method;\r",
+							"pm.request.url = pm.environment.get('baseUrl') + path;"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/* --- 1. Kiểm tra status code --- */\r",
+							"const expectedStatus = +pm.iterationData.get('expected_status');\r",
+							"\r",
+							"pm.test(`Status code should be ${expectedStatus}`, () => {\r",
+							"    pm.response.to.have.status(expectedStatus);\r",
+							"});\r",
+							"\r",
+							"/* --- 2. Kiểm tra message (nếu có) --- */\r",
+							"const expectedMsg = pm.iterationData.get('expected_message');\r",
+							"if (expectedMsg) {\r",
+							"    // Response có thể là JSON hoặc text\r",
+							"    let bodyText = pm.response.text();\r",
+							"\r",
+							"    pm.test('Message matches expected', () => {\r",
+							"        pm.expect(bodyText).to.include(expectedMsg);\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"/* --- 3. Kiểm tra payload khi 201 --- */\r",
+							"if (expectedStatus === 201) {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.test('201 payload integrity', () => {\r",
+							"        pm.expect(json).to.have.property('id').above(0);\r",
+							"        pm.expect(json).to.have.property('parent_id', 0);\r",
+							"        pm.expect(json).to.have.property('name', pm.iterationData.get('name'));\r",
+							"        pm.expect(json).to.have.property('slug', pm.iterationData.get('slug'));\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"{{name}}\",\n  \"slug\": \"{{slug}}\"\n}",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/categories",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"categories"
+					]
+				},
+				"description": "Store new category"
+			},
+			"response": []
+		}
+	]
+}

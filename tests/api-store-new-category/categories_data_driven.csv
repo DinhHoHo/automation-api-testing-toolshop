@@ -1,0 +1,11 @@
+name,slug,expected_status,expected_message,req_method,req_path
+Accesories,accesories,201,,POST,/categories
+,no-name,422,,POST,/categories
+Missing slug,,422,,POST,/categories
+Lorem ipsum dolor sit amet consectetur adipiscing elit Lorem ipsum dolor sit amet  consectetur adipiscing elit.Lorem ipsum dolor sit amet consectetur adipiscing elit Lorem ipsum dolor sit amet consectetur adipiscing ellll,slug,422,,POST,/categories
+Lorem ipsum dolor sit amet consectetur adipiscing elit Lorem ipsum dolor sit amet  consectetur adipiscing elit.Lorem ipsum dolor sit amet consectetur adipiscing elit Lorem ipsum dolor sit amet consectetur adipiscing elll,slug,201,,POST,/categories
+Hand Tools,hand*tools,422,,POST,/categories
+Hand Tools,duplicate-name,422,,POST,/categories
+Duplicate slug,hand-tools,422,,POST,/categories
+Wrong method,wrong-method,405,Method is not allowed for the requested route,PUT,/categories
+Wrong URL,wrong-url,404,Requested item not found,POST,/categorie
