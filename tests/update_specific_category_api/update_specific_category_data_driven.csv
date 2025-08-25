@@ -1,0 +1,9 @@
+categoryId,name,slug,expected_status,expected_message,req_method,req_path
+1,Hammer Tools,hammer-tools,200,,PUT,/categories/1
+1,Garden Tools,garden-tools,200,,PUT,/categories/1
+999999,Any,any,404,,PUT,/categories/999999
+999999,Any,any,404,Resource not found,PUT,/categories/999999
+abc,Any,any,404,,PUT,/categories/abc
+abc,Any,any,404,Resource not found,PUT,/categories/abc
+1,Any,any,405,,POST,/categories/1
+1,Any,any,405,Method is not allowed for the requested route,POST,/categories/1

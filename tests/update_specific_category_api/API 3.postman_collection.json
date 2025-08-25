@@ -1,0 +1,164 @@
+{
+	"info": {
+		"_postman_id": "ef7b4773-60c5-4326-b576-cae6c3240e6b",
+		"name": "API 3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44045492",
+		"_collection_link": "https://demo-team-9120.postman.co/workspace/API-Testing~8eead984-ed2d-412f-a35c-9bb70fb3cd13/collection/44045492-ef7b4773-60c5-4326-b576-cae6c3240e6b?action=share&source=collection_link&creator=44045492"
+	},
+	"item": [
+		{
+			"name": "Update specific category",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"/**\r",
+							" * Pre-request Script for PUT /categories/{categoryId}\r",
+							" * - Lấy method và path từ CSV\r",
+							" * - Tạo JSON body từ các cột name/slug: \r",
+							" *   + Nếu cột rỗng thì BỎ TRƯỜNG (để simulate \"missing field\" cho 422)\r",
+							" * - Gán vào request hiện tại\r",
+							" */\r",
+							"\r",
+							"const method = (pm.iterationData.get('req_method') || 'PUT').toUpperCase();\r",
+							"const path   = pm.iterationData.get('req_path') || '/categories/1';\r",
+							"\r",
+							"// Ghép baseUrl + path (tránh trùng '/')\r",
+							"const base = (pm.environment.get('baseUrl') || '').replace(/\\/$/, '');\r",
+							"const fullUrl = base + (path.startsWith('/') ? path : '/' + path);\r",
+							"\r",
+							"pm.request.method = method;\r",
+							"pm.request.url    = fullUrl;\r",
+							"\r",
+							"// --- Dựng body JSON chỉ với các field có giá trị ---\r",
+							"const name = pm.iterationData.get('name');\r",
+							"const slug = pm.iterationData.get('slug');\r",
+							"const bodyObj = {};\r",
+							"if (name !== undefined && name !== '') bodyObj.name = name;\r",
+							"if (slug !== undefined && slug !== '') bodyObj.slug = slug;\r",
+							"\r",
+							"// Chỉ gắn body với các method có payload\r",
+							"if (['PUT', 'POST', 'PATCH'].includes(method)) {\r",
+							"  pm.request.headers.upsert({ key: 'Content-Type', value: 'application/json' });\r",
+							"  pm.request.body = {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify(bodyObj)\r",
+							"  };\r",
+							"} else {\r",
+							"  pm.request.body = null;\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/**\r",
+							" * Tests for PUT /categories/{categoryId}\r",
+							" * - Luôn kiểm tra HTTP status theo expected_status\r",
+							" * - Nếu expected_message có giá trị → kiểm tra message\r",
+							" * - Nếu 200 → kiểm tra payload { success: true }\r",
+							" * - Các case 422 không kiểm message vì đặc tả không quy định\r",
+							" */\r",
+							"\r",
+							"const expectedStatus  = Number(pm.iterationData.get('expected_status'));\r",
+							"const expectedMessage = pm.iterationData.get('expected_message') || '';\r",
+							"\r",
+							"// (1) Luôn kiểm tra HTTP Status Code\r",
+							"pm.test(`HTTP status is ${expectedStatus}`, () => {\r",
+							"  pm.response.to.have.status(expectedStatus);\r",
+							"});\r",
+							"\r",
+							"// (2) Kiểm tra message khi test case yêu cầu (404/405)\r",
+							"if (expectedMessage) {\r",
+							"  pm.test('Message matches expected text', () => {\r",
+							"    pm.expect(pm.response.text()).to.include(expectedMessage);\r",
+							"  });\r",
+							"}\r",
+							"\r",
+							"// (3) Khi 200: kiểm tra payload theo đặc tả\r",
+							"if (expectedStatus === 200) {\r",
+							"  pm.test('Payload is { \"success\": true }', () => {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json).to.be.an('object');\r",
+							"    pm.expect(json).to.have.property('success', true);\r",
+							"  });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/categories/:categoryId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"categories",
+						":categoryId"
+					],
+					"variable": [
+						{
+							"key": "categoryId",
+							"value": "",
+							"description": "(Required) The categoryId parameter in path"
+						}
+					]
+				},
+				"description": "Update specific category"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

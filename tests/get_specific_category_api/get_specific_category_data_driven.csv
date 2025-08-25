@@ -1,0 +1,11 @@
+categoryId,expected_status,expected_message,req_method,req_path
+1,200,,GET,/categories/1
+1,200,,GET,/categories/1
+1,200,,GET,/categories/1
+999999,404,,GET,/categories/999999
+999999,404,Requested item not found,GET,/categories/999999
+abc,404,,GET,/categories/abc
+abc,404,Requested item not found,GET,/categories/abc
+1,405,,POST,/categories/1
+1,405,Method is not allowed for the requested route,POST,/categories/1
+1,404,,GET,/category/1

@@ -1,0 +1,16 @@
+{
+  "id": "api-test-environment",
+  "name": "API Test Environment",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8091",
+      "enabled": true
+    },
+    {
+      "key": "api_timeout",
+      "value": "10000",
+      "enabled": true
+    }
+  ]
+}
